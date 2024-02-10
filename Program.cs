@@ -1,25 +1,31 @@
-﻿public static class WebClient
-{
-    public static void Main()
-    {
+﻿public static class WebClient {
+    public static void Main() {
 
 
         //客服端
         //每次链接，只能进行一次请求
-        HttpClient clien = new HttpClient();
+        HttpClient client = new HttpClient();
 
-        clien.BaseAddress = new Uri("http://localhost:5218/");
+        client.BaseAddress = new Uri("http://localhost:5218/");
 
-        try
-        {
-            HttpResponseMessage respone = clien.GetAsync("/").Result;
+        GetDL(client);
+
+    }
+    static void GetDL(HttpClient client) {
+        HttpResponseMessage respones = client.GetAsync("/dl").Result;
+        byte[] data = respones.Content.ReadAsByteArrayAsync().Result;
+        System.Console.WriteLine(data.Length);
+        // 存成文件
+        File.WriteAllBytes("dl.zip", data);
+    }
+    static void GetHome(HttpClient client) {
+        try {
+            HttpResponseMessage respone = client.GetAsync("/").Result;
             byte[] data = respone.Content.ReadAsByteArrayAsync().Result;
             Console.WriteLine(data.Length);
             string resString = respone.Content.ReadAsStringAsync().Result;
             Console.WriteLine(resString);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Console.WriteLine(ex.Message);
         }
     }
